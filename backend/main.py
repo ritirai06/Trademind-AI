@@ -348,8 +348,11 @@ def execute_trade(trade: TradeRequest):
         balance, total_pnl = 100000.0, 0.0
     else:
         balance, total_pnl = row["balance"], row["total_profit_loss"]
-        
-    cost = trade.price * trade.quantity
+
+    # Ensure types are correct
+    trade_qty = int(trade.quantity)
+    trade_price = float(trade.price)
+    cost = trade_price * trade_qty
     
     if trade.type == "BUY":
         if balance < cost:
@@ -359,41 +362,43 @@ def execute_trade(trade: TradeRequest):
         new_balance = balance - cost
         cursor.execute("UPDATE virtual_portfolio SET balance = ? WHERE user_email = ?", (new_balance, trade.user_email))
         cursor.execute("INSERT INTO paper_trades (user_email, symbol, type, quantity, entry_price, status) VALUES (?, ?, ?, ?, ?, ?)",
-                       (trade.user_email, trade.symbol, "BUY", trade.quantity, trade.price, "OPEN"))
+                       (trade.user_email, trade.symbol, "BUY", trade_qty, trade_price, "OPEN"))
     elif trade.type == "SELL":
         # Check if user has open positions for this symbol
         cursor.execute("SELECT id, quantity, entry_price FROM paper_trades WHERE user_email = ? AND symbol = ? AND status = 'OPEN' ORDER BY timestamp ASC", (trade.user_email, trade.symbol))
-        positions = cursor.fetchall()
+        positions = [dict(r) for r in cursor.fetchall()]
         
-        total_qty = sum(p["quantity"] for p in positions)
-        if total_qty < trade.quantity:
+        total_open_qty = sum(p["quantity"] for p in positions)
+        if total_open_qty < trade_qty:
             conn.close()
-            raise HTTPException(status_code=400, detail="Insufficient positions to sell")
+            raise HTTPException(status_code=400, detail=f"Insufficient positions to sell. You have {total_open_qty} units.")
             
         # Process sell (FIFO)
-        remaining_to_sell = trade.quantity
-        profit_this_trade = 0
+        remaining_to_sell = trade_qty
+        total_profit_this_action = 0
+        
         for p in positions:
             if remaining_to_sell <= 0: break
             
             p_qty = p["quantity"]
             if p_qty <= remaining_to_sell:
                 # Close this entire position
-                cursor.execute("UPDATE paper_trades SET status = 'CLOSED', exit_price = ? WHERE id = ?", (trade.price, p["id"]))
-                profit_this_trade += (trade.price - p["entry_price"]) * p_qty
+                cursor.execute("UPDATE paper_trades SET status = 'CLOSED', exit_price = ? WHERE id = ?", (trade_price, p["id"]))
+                total_profit_this_action += (trade_price - p["entry_price"]) * p_qty
                 remaining_to_sell -= p_qty
             else:
-                # Partial close (this is more complex, let's just close all and reopen remainder for simplicity in this MVP)
-                # Actually, let's just close the row piece by piece
-                cursor.execute("UPDATE paper_trades SET quantity = ? WHERE id = ?", (p_qty - remaining_to_sell, p["id"]))
-                # Record the sold part
-                cursor.execute("INSERT INTO paper_trades (user_email, symbol, type, quantity, entry_price, exit_price, status) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                               (trade.user_email, trade.symbol, "SELL", remaining_to_sell, p["entry_price"], trade.price, "CLOSED"))
-                profit_this_trade += (trade.price - p["entry_price"]) * remaining_to_sell
+                # Partial close the position
+                new_qty = p_qty - remaining_to_sell
+                cursor.execute("UPDATE paper_trades SET quantity = ? WHERE id = ?", (new_qty, p["id"]))
+                total_profit_this_action += (trade_price - p["entry_price"]) * remaining_to_sell
                 remaining_to_sell = 0
 
+        # Record the transaction as a SELL action for the journal
+        cursor.execute("INSERT INTO paper_trades (user_email, symbol, type, quantity, exit_price, status) VALUES (?, ?, ?, ?, ?, ?)",
+                       (trade.user_email, trade.symbol, "SELL", trade_qty, trade_price, "CLOSED"))
+
         new_balance = balance + cost
-        cursor.execute("UPDATE virtual_portfolio SET balance = ?, total_profit_loss = ? WHERE user_email = ?", (new_balance, total_pnl + profit_this_trade, trade.user_email))
+        cursor.execute("UPDATE virtual_portfolio SET balance = ?, total_profit_loss = ? WHERE user_email = ?", (new_balance, total_pnl + total_profit_this_action, trade.user_email))
     
     conn.commit()
     conn.close()

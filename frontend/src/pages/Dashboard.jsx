@@ -726,13 +726,22 @@ const LearnView = () => {
                 .learn-content { overflow-y: auto; }
                 .article-card { padding: 48px; border-radius: 24px; }
                 .article-header { margin-bottom: 40px; }
-                .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; margin-bottom: 16px; }
-                .article-header h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
-                
-                .content-section { margin-bottom: 32px; }
-                .content-section h3 { font-size: 20px; color: #6366f1; margin-bottom: 12px; }
-                .content-section p { font-size: 16px; line-height: 1.8; color: #94a3b8; white-space: pre-line; }
-
+                .module-viewer { 
+                  padding: 40px; grid-column: 1 / -1; background: #0f172a; border-radius: 24px; 
+                  border: 1px solid rgba(255,255,255,0.05); min-height: 400px; z-index: 10;
+                }
+                .back-btn { 
+                  background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); 
+                  color: #6366f1; padding: 10px 20px; border-radius: 100px; font-weight: 700; 
+                  cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+                }
+                .module-viewer h2 { font-size: 26px; font-weight: 800; margin-bottom: 24px; color: #fff; }
+                .module-content-scroll { max-height: 450px; overflow-y: auto; padding-right: 16px; margin-bottom: 24px; }
+                .content-sec { margin-bottom: 32px; border-left: 2px solid #10b981; padding-left: 20px; }
+                .content-sec h4 { font-size: 18px; color: #10b981; margin-bottom: 8px; font-weight: 700; }
+                .content-sec p { line-height: 1.8; color: #94a3b8; font-size: 15px; }
+                .bubble-content p { margin-bottom: 8px; }
+                .bubble-content p:last-child { margin-bottom: 0; }
                 .article-footer { margin-top: 48px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); }
                 .tip-box { display: flex; gap: 16px; padding: 20px; background: rgba(245, 158, 11, 0.05); border-radius: 16px; border-left: 4px solid #f59e0b; }
                 .tip-box p { font-size: 14px; color: #d97706; }
@@ -837,6 +846,15 @@ const TradingSikhe = ({ userData, symbol, marketData }) => {
     };
 
     const handleTrade = async (type) => {
+        if (!marketData?.price) {
+            toast.error("Market price not available");
+            return;
+        }
+        if (!quantity || quantity <= 0) {
+            toast.error("Please enter a valid quantity");
+            return;
+        }
+
         try {
             await axios.post('/api/simulator/trade', {
                 user_email: userData.email,
@@ -847,7 +865,10 @@ const TradingSikhe = ({ userData, symbol, marketData }) => {
             });
             toast.success(`${type} Successful!`);
             fetchSimulatorData();
-        } catch (err) { toast.error("Trade Failed"); }
+        } catch (err) {
+            const msg = err.response?.data?.detail || "Trade Failed";
+            toast.error(msg);
+        }
     };
 
     const markComplete = async (mid) => {
@@ -991,6 +1012,21 @@ const TradingSikhe = ({ userData, symbol, marketData }) => {
                 .sikhe-tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 12px; }
                 .sikhe-tabs button { padding: 8px 16px; border-radius: 8px; border: none; background: transparent; color: #94a3b8; font-weight: 700; cursor: pointer; transition: 0.2s; }
                 .sikhe-tabs button.active { background: #10b981; color: #fff; }
+
+                .module-viewer { 
+                  padding: 40px; grid-column: 1 / -1; background: #0f172a; border-radius: 24px; 
+                  border: 1px solid rgba(255,255,255,0.05); min-height: 400px; z-index: 10;
+                }
+                .back-btn { 
+                  background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); 
+                  color: #6366f1; padding: 10px 20px; border-radius: 100px; font-weight: 700; 
+                  cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+                }
+                .module-viewer h2 { font-size: 26px; font-weight: 800; margin-bottom: 24px; color: #fff; }
+                .module-content-scroll { max-height: 450px; overflow-y: auto; padding-right: 16px; margin-bottom: 24px; }
+                .content-sec { margin-bottom: 32px; border-left: 2px solid #10b981; padding-left: 20px; }
+                .content-sec h4 { font-size: 18px; color: #10b981; margin-bottom: 8px; font-weight: 700; }
+                .content-sec p { line-height: 1.8; color: #94a3b8; font-size: 15px; }
 
                 .academy-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
                 .module-card-sikhe { padding: 24px; border-radius: 20px; }

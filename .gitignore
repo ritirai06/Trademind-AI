@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Database and Data
+database/*.db
+database/*.sqlite
+data/
+*.csv
+*.xlsx
+
+# ML Models
+models/*.h5
+models/*.gz
+models/*.joblib
+models/*.pkl
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.env.*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

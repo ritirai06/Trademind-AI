@@ -1,0 +1,15 @@
+numpy
+pandas
+yfinance
+alpha_vantage
+pycoingecko
+finnhub-python
+tensorflow
+scikit-learn
+fastapi
+uvicorn
+python-dotenv
+sqlalchemy
+matplotlib
+passlib[bcrypt]
+python-jose[cryptography]

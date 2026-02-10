@@ -427,63 +427,148 @@ def mentor_chat(req: MentorRequest):
     msg = req.message
     ctx = req.context
     symbol = ctx.get("symbol", "the market")
+    price = ctx.get("price", 0)
+    signal = ctx.get("signal", "Neutral")
+    confidence = ctx.get("confidence", 0.5)
+    change = ctx.get("change", 0)
+    change_percent = ctx.get("changePercent", 0)
     
-    # SYSTEM PROMPT for TradeMind AI Mentor (Strict Rules)
+    # SYSTEM PROMPT for TradeMind AI Mentor (Strict Educational Rules)
     system_prompt = f"""
-    You are "TradeMind AI Mentor", an intelligent, responsible, and beginner-friendly AI trading educator.
-    Context: Currently analyzing {symbol}. 
-    Current Price: ${ctx.get('price', 'N/A')}.
-    Indicators: {json.dumps(ctx.get('indicators', []))}.
-    AI Prediction: {json.dumps(ctx.get('prediction', {}))}.
+    You are "TradeMind AI Mentor", a professional trading educator focused on teaching market analysis.
+    
+    Current Context:
+    - Asset: {symbol}
+    - Price: ${price}
+    - Signal: {signal}
+    - Confidence: {confidence * 100:.0f}%
+    - Change: {change_percent:+.2f}%
 
-    CORE PRINCIPLES:
-    1. NEVER give direct buy/sell advice.
-    2. NEVER predict guaranteed outcomes.
-    3. Always communicate market risk and uncertainty.
-    4. Stay educational and neutral. 
-    5. Explain concepts in very easy English.
-    6. Always add a mandatory disclaimer: "TradeMind AI Mentor is for education only. Financial markets are risky. No guaranteed profit."
-
-    MISSION: Educate users about indicators, market mechanics, and risk management. 
-    If asked "Should I buy?", refuse politely and explain the technical signals instead.
+    STRICT RULES:
+    1. NEVER give buy/sell recommendations or price targets
+    2. NEVER guarantee outcomes or predict exact prices
+    3. Always structure responses in 4 sections:
+       📊 Market Context - Current state and what's happening
+       📈 Indicators / Signals - What the technical data shows
+       ⚠️ Risk Insight - Important risk considerations
+       📚 Learning Summary - Key educational takeaway
+    4. Use calm, professional, mentor-like tone
+    5. Focus on education and understanding, not action
+    6. If asked "should I buy/sell", explain the analysis instead
+    
+    Keep responses concise (4-6 sentences per section). Use simple language.
     """
 
     try:
         # Call Local Ollama API
         ollama_url = "http://localhost:11434/api/generate"
         payload = {
-            "model": "llama3", # Fallback to llama2 if llama3 not found
-            "prompt": f"{system_prompt}\n\nUser Question: {msg}\n\nMentor Response:",
+            "model": "llama3",
+            "prompt": f"{system_prompt}\n\nUser Question: {msg}\n\nProvide a structured educational response:",
             "stream": False,
             "options": {
-                "temperature": 0.3,
-                "top_p": 0.9
+                "temperature": 0.4,
+                "top_p": 0.9,
+                "num_predict": 400
             }
         }
         
-        response = requests.post(ollama_url, json=payload, timeout=10)
+        response = requests.post(ollama_url, json=payload, timeout=15)
         if response.status_code == 200:
             result = response.json()
-            return {"text": result.get("response", "I am thinking...")}
+            mentor_response = result.get("response", "")
+            
+            # Ensure structured format if Ollama doesn't follow it
+            if "📊" not in mentor_response:
+                mentor_response = format_structured_response(msg, ctx)
+            
+            return {"text": mentor_response}
             
     except Exception as e:
-        print(f"Ollama error: {e}. Falling back to rule-based mentor.")
+        print(f"Ollama error: {e}. Using structured fallback.")
 
-    # FALLBACK RULE-BASED LOGIC (If Ollama is not running)
-    msg_l = msg.lower()
-    disclaimer = "\n\n*Note: TradeMind AI Mentor is for education only. Financial markets are risky. No guaranteed profit.*"
+    # FALLBACK: Structured Educational Response
+    return {"text": format_structured_response(msg, ctx)}
+
+def format_structured_response(msg: str, ctx: dict) -> str:
+    """Generate structured educational response based on query context"""
+    symbol = ctx.get("symbol", "this asset")
+    price = ctx.get("price", 0)
+    signal = ctx.get("signal", "Neutral")
+    confidence = ctx.get("confidence", 0.5)
+    change_percent = ctx.get("changePercent", 0)
     
-    if "buy" in msg_l or "sell" in msg_l or "should i" in msg_l:
-        response_text = "I cannot give direct buy or sell advice. However, I can help you understand technical indicators like RSI or MACD. Currently, the system shows " + str(ctx.get('prediction', {}).get('signal', 'neutral')) + " sentiment. Remember, signals are probability-based, not guarantees."
-    elif "rsi" in msg_l:
-        val = ctx.get('indicators', [{}])[0].get('value', 'N/A')
-        response_text = f"RSI (Relative Strength Index) for {symbol} is currently {val}. RSI measures momentum to identify overbought (>70) or oversold (<30) conditions."
-    elif "risk" in msg_l:
-        response_text = "Risk management is the foundation of trading. Use stop-losses, keep position sizes small (e.g., 1% risk per trade), and never trade money you cannot afford to lose."
-    else:
-        response_text = f"As your TradeMind Mentor, I'm here to explain how {symbol}'s data works. You can ask about indicators, risk management, or how AI models like LSTM analyze patterns."
+    msg_lower = msg.lower()
+    
+    # Detect query intent
+    if "buy" in msg_lower or "sell" in msg_lower or "should i" in msg_lower:
+        return f"""📊 Market Context
+{symbol} is currently trading at ${price:.2f} with a {change_percent:+.2f}% change. The market is showing {signal.lower()} characteristics based on recent price action and volume patterns.
 
-    return {"text": response_text + disclaimer}
+📈 Indicators / Signals
+Our AI model indicates a {signal} signal with {confidence * 100:.0f}% confidence. This is derived from analyzing momentum indicators (RSI, MACD), moving averages, and volatility patterns. The model identifies probability, not certainty.
+
+⚠️ Risk Insight
+I cannot provide buy or sell advice. Every trade carries risk, and past patterns don't guarantee future results. Consider your risk tolerance, investment timeline, and position sizing before making any decisions.
+
+📚 Learning Summary
+Trading signals are tools for analysis, not instructions. Professional traders use signals as one input among many, including fundamental analysis, market sentiment, and personal risk management rules."""
+    
+    elif "indicator" in msg_lower or "rsi" in msg_lower or "macd" in msg_lower or "ema" in msg_lower:
+        return f"""📊 Market Context
+{symbol} is at ${price:.2f}. Technical indicators help us understand momentum, trend strength, and potential reversal points by analyzing historical price and volume data.
+
+📈 Indicators / Signals
+RSI measures momentum on a 0-100 scale (below 30 = oversold, above 70 = overbought). MACD shows trend direction through moving average convergence. EMAs track price trends with recent data weighted more heavily. Our current {signal} signal reflects these combined indicators.
+
+⚠️ Risk Insight
+Indicators can give false signals, especially in volatile or low-volume markets. They work best when multiple indicators align and are confirmed by price action. Never rely on a single indicator.
+
+📚 Learning Summary
+Technical indicators are mathematical calculations based on price history. They help identify patterns and probabilities, but require practice and context to interpret correctly. Combine multiple indicators for better analysis."""
+    
+    elif "risk" in msg_lower:
+        return f"""📊 Market Context
+{symbol} is showing {signal.lower()} signals at ${price:.2f}. However, all market positions carry inherent risk regardless of technical signals or AI predictions.
+
+📈 Indicators / Signals
+While our model shows {confidence * 100:.0f}% confidence, this represents historical pattern matching, not future certainty. Market conditions can change rapidly due to news, sentiment shifts, or unexpected events.
+
+⚠️ Risk Insight
+Key risk management principles: (1) Never risk more than 1-2% of capital per trade, (2) Always use stop-losses, (3) Diversify across assets, (4) Only trade with money you can afford to lose. Emotional discipline is as important as technical analysis.
+
+📚 Learning Summary
+Successful trading is more about managing losses than picking winners. Professional traders focus on risk-reward ratios, position sizing, and consistent strategy execution rather than trying to predict every move."""
+    
+    elif "signal" in msg_lower or "why" in msg_lower:
+        direction = "upward" if signal == "Strong Buy" or signal == "Buy" else "neutral" if signal == "Hold" else "downward"
+        return f"""📊 Market Context
+{symbol} is displaying a {signal} signal at ${price:.2f} ({change_percent:+.2f}% change). This reflects the AI model's analysis of recent price patterns and technical indicator alignment.
+
+📈 Indicators / Signals
+The {signal} classification comes from our LSTM neural network analyzing 60 days of price data, RSI momentum, MACD trend direction, and moving average positions. The model detected {direction} probability patterns with {confidence * 100:.0f}% confidence based on historical similar conditions.
+
+⚠️ Risk Insight
+Signals indicate probability, not certainty. A {signal} signal means historical patterns suggest this direction, but markets can move against any signal. External factors like news, earnings, or macro events can override technical patterns.
+
+📚 Learning Summary
+AI trading models use machine learning to find patterns in historical data. They're powerful tools for analysis but should be combined with fundamental research, market awareness, and personal risk management. No model is perfect."""
+    
+    else:
+        # General educational response
+        return f"""📊 Market Context
+{symbol} is currently at ${price:.2f} with a {signal} signal. I'm here to help you understand the technical analysis behind this assessment and how to interpret market data.
+
+📈 Indicators / Signals
+Our platform uses LSTM neural networks combined with technical indicators (RSI, MACD, EMAs) to analyze market patterns. The current {confidence * 100:.0f}% confidence reflects how strongly historical patterns align with current conditions.
+
+⚠️ Risk Insight
+Remember that all trading involves risk. Technical analysis and AI predictions are tools for understanding probability, not guarantees. Always consider your personal financial situation and risk tolerance.
+
+📚 Learning Summary
+You can ask me about specific indicators, risk management strategies, or why certain signals appear. I'm here to educate, not to tell you what to trade. What aspect would you like to explore?"""
+
+
 
 if __name__ == "__main__":
     import uvicorn

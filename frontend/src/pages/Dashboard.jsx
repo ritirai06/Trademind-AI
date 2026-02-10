@@ -260,70 +260,77 @@ const Dashboard = () => {
             </main>
 
             <style jsx>{`
-        .dashboard-layout { display: flex; height: 100vh; background: #020617; color: #f8fafc; }
-        .sidebar { width: 280px; border-right: 1px solid rgba(255,255,255,0.05); padding: 32px; display: flex; flex-direction: column; background: #010409; }
+        .dashboard-layout { display: flex; height: 100vh; background: #0f1419; color: #e4e7eb; }
+        .sidebar { width: 280px; border-right: 1px solid rgba(255,255,255,0.08); padding: 32px; display: flex; flex-direction: column; background: #1a1f26; }
         .sidebar-brand { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 800; margin-bottom: 48px; }
-        .sidebar-nav { display: flex; flex-direction: column; gap: 6px; flex: 1; }
-        .nav-group-label { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin: 20px 0 10px 16px; letter-spacing: 1px; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .nav-group-label { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin: 20px 0 10px 16px; letter-spacing: 1px; }
         .nav-item { 
-          display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px; 
-          color: #94a3b8; transition: all 0.2s; background: transparent; border: none; width: 100%; cursor: pointer;
-          font-family: inherit; font-size: 15px; font-weight: 600; text-align: left;
+          display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; 
+          color: #9ca3af; transition: all 0.2s; background: transparent; border: none; width: 100%; cursor: pointer;
+          font-family: inherit; font-size: 14px; font-weight: 600; text-align: left; position: relative;
         }
-        .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-        .nav-item.active { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
-        .learn-nav.active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .nav-item::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 0; background: #818cf8; border-radius: 0 2px 2px 0; transition: height 0.2s; }
+        .nav-item:hover { background: rgba(255,255,255,0.04); color: #d1d5db; }
+        .nav-item.active { background: rgba(129, 140, 248, 0.1); color: #a5b4fc; }
+        .nav-item.active::before { height: 20px; }
+        .learn-nav.active { background: rgba(16, 185, 129, 0.08); color: #10b981; }
+        .learn-nav.active::before { background: #10b981; }
+        .sikhe-nav.active::before { background: #10b981; }
         .logout-btn { color: #f43f5e; margin-top: auto; }
+        .logout-btn::before { display: none; }
 
         .main-content { flex: 1; padding: 32px; overflow-y: auto; display: flex; flex-direction: column; }
         .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         .search-bar { position: relative; width: 450px; }
-        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #475569; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #6b7280; }
         .search-bar input { 
-          padding-left: 48px; width: 100%; background: #0d1117; border: 1px solid rgba(255,255,255,0.05); 
-          border-radius: 14px; height: 48px; color: #fff; font-size: 15px; outline: none;
+          padding-left: 48px; width: 100%; background: #1a1f26; border: 1px solid rgba(255,255,255,0.08); 
+          border-radius: 12px; height: 44px; color: #e4e7eb; font-size: 14px; outline: none; transition: all 0.2s;
         }
-        .search-bar input:focus { border-color: #6366f1; }
+        .search-bar input::placeholder { color: #6b7280; }
+        .search-bar input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.1); }
         
         .header-actions { display: flex; align-items: center; gap: 16px; }
-        .market-status { padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; border-radius: 100px; }
-        .pulse { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; animation: pulse 2s infinite; }
+        .market-status { padding: 8px 16px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; border-radius: 100px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .pulse { width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
         .icon-btn { 
-          background: #0d1117; border: 1px solid rgba(255,255,255,0.05); color: #94a3b8; 
-          width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+          background: #1a1f26; border: 1px solid rgba(255,255,255,0.08); color: #9ca3af; 
+          width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
         }
+        .icon-btn:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.12); }
         .profile-trigger { 
-          display: flex; align-items: center; gap: 12px; background: #0d1117; 
-          padding: 6px 16px 6px 6px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); color: #fff;
+          display: flex; align-items: center; gap: 12px; background: #1a1f26; 
+          padding: 6px 16px 6px 6px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.08); color: #e4e7eb;
         }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #6366f1; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .avatar { width: 36px; height: 36px; border-radius: 50%; background: #818cf8; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; color: #fff; }
 
         .view-container { flex: 1; }
 
         .notification-wrapper, .profile-wrapper { position: relative; }
         .dropdown-menu { 
           position: absolute; top: calc(100% + 12px); right: 0; width: 280px; 
-          background: #0d1117; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; 
-          box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 1000; overflow: hidden;
+          background: #1a1f26; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; 
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5); z-index: 1000; overflow: hidden;
         }
-        .dropdown-header { padding: 16px; font-size: 13px; font-weight: 700; color: #64748b; border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; letter-spacing: 0.5px; }
-        .notif-item { display: flex; gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.2s; cursor: pointer; text-align: left; }
-        .notif-item:hover { background: rgba(255,255,255,0.02); }
-        .notif-item p { font-size: 13px; margin-bottom: 4px; color: #e2e8f0; margin: 0; }
-        .notif-item span { font-size: 11px; color: #475569; }
-        .notif-badge { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; background: #f43f5e; border-radius: 50%; border: 2px solid #0d1117; }
+        .dropdown-header { padding: 16px; font-size: 13px; font-weight: 700; color: #6b7280; border-bottom: 1px solid rgba(255,255,255,0.08); text-transform: uppercase; letter-spacing: 0.5px; }
+        .notif-item { display: flex; gap: 12px; padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; cursor: pointer; text-align: left; }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-item p { font-size: 13px; margin-bottom: 4px; color: #d1d5db; margin: 0; }
+        .notif-item span { font-size: 11px; color: #6b7280; }
+        .notif-badge { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; background: #f43f5e; border-radius: 50%; border: 2px solid #1a1f26; }
 
         .profile-dropdown { width: 220px; padding: 8px; }
         .profile-dropdown button { 
           width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; 
-          border-radius: 10px; border: none; background: transparent; color: #94a3b8; 
+          border-radius: 10px; border: none; background: transparent; color: #9ca3af; 
           font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s;
         }
-        .profile-dropdown button:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .profile-dropdown button:hover { background: rgba(255,255,255,0.05); color: #e4e7eb; }
         .profile-trigger { cursor: pointer; transition: 0.2s; }
-        .profile-trigger:hover { border-color: rgba(99, 102, 241, 0.4); }
+        .profile-trigger:hover { border-color: rgba(129, 140, 248, 0.4); }
         .divider { height: 1px; background: rgba(255,255,255,0.05); margin: 8px 0; }
         .logout-action { color: #f43f5e !important; }
         .logout-action:hover { background: rgba(244, 63, 94, 0.1) !important; }
@@ -340,36 +347,46 @@ const DashboardOverview = ({ marketData, historyData, interval, setInterval, new
             <div className="glass-card main-stat-card">
                 <div className="card-top">
                     <div>
-                        <span className="label">SYMBOL: {marketData?.symbol}</span>
+                        <span className="label">{marketData?.symbol}</span>
                         <h2>${marketData?.price?.toFixed(2)}</h2>
-                    </div>
-                    <div className={`price-badge ${marketData?.change >= 0 ? 'up' : 'down'}`}>
-                        {marketData?.change >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />} {marketData?.changePercent}%
+                        <div className={`price-change ${marketData?.change >= 0 ? 'up' : 'down'}`}>
+                            {marketData?.change >= 0 ? <ArrowUpRight size={16} /> : <ArrowDownRight size={16} />}
+                            <span>${Math.abs(marketData?.change || 0).toFixed(2)} ({marketData?.changePercent}%)</span>
+                        </div>
                     </div>
                 </div>
                 <div className="meta-stats">
-                    <div className="m-item"><span>Range High</span> <h4>$158.4</h4></div>
-                    <div className="m-item"><span>Range Low</span> <h4>$151.0</h4></div>
+                    <div className="m-item"><span>High</span> <h4>$158.40</h4></div>
+                    <div className="m-item"><span>Low</span> <h4>$151.00</h4></div>
                     <div className="m-item"><span>Volume</span> <h4>54.2M</h4></div>
                 </div>
             </div>
 
             <div className="glass-card intelligence-card">
-                <div className="intelligence-header">
-                    <Zap size={20} color="#6366f1" />
-                    <h3>AI Signal Engine</h3>
+                <div className="intel-header">
+                    <span className="intel-label">AI DECISION ENGINE</span>
                 </div>
                 <div className="intel-content">
                     <div className="predict-stat">
-                        <span>Target Prediction</span>
+                        <span className="predict-label">Predicted Close</span>
                         <h3>${marketData?.prediction.nextClose?.toFixed(2)}</h3>
                     </div>
-                    <div className="confidence-meter">
-                        <div className="meter-label">AI Confidence: {(marketData?.prediction.confidence * 100).toFixed(0)}%</div>
-                        <div className="meter-track"><div className="meter-fill" style={{ width: `${marketData?.prediction.confidence * 100}%` }}></div></div>
+                    <div className="signal-display">
+                        <div className={`signal-indicator ${marketData?.prediction.signal.toLowerCase().replace(' ', '-')}`}>
+                            {marketData?.prediction.signal}
+                        </div>
+                        <div className="confidence-bar">
+                            <div className="conf-segments">
+                                {[...Array(5)].map((_, i) => (
+                                    <div key={i} className={`segment ${i < Math.floor((marketData?.prediction.confidence || 0) * 5) ? 'active' : ''}`}></div>
+                                ))}
+                            </div>
+                            <span className="conf-text">{(marketData?.prediction.confidence * 100).toFixed(0)}% Confidence</span>
+                        </div>
                     </div>
-                    <div className={`signal-box ${marketData?.prediction.signal.toLowerCase().replace(' ', '-')}`}>
-                        {marketData?.prediction.signal}
+                    <div className="ai-factors">
+                        <span className="factors-label">Analysis factors:</span>
+                        <span className="factors-text">Price action · Volume · Technical indicators</span>
                     </div>
                 </div>
             </div>
@@ -378,7 +395,7 @@ const DashboardOverview = ({ marketData, historyData, interval, setInterval, new
         <div className="main-content-grid">
             <div className="chart-section glass-card">
                 <div className="chart-header">
-                    <h3>Price Action Analytics</h3>
+                    <h3>Price Chart</h3>
                     <div className="chart-tools">
                         {['1h', '4h', '1d'].map(i => (
                             <button key={i} className={interval === i ? 'active' : ''} onClick={() => setInterval(i)}>{i.toUpperCase()}</button>
@@ -386,19 +403,19 @@ const DashboardOverview = ({ marketData, historyData, interval, setInterval, new
                     </div>
                 </div>
                 <div className="main-chart">
-                    <ResponsiveContainer width="100%" height={380}>
+                    <ResponsiveContainer width="100%" height={340}>
                         <AreaChart data={historyData}>
                             <defs>
                                 <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
-                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#818cf8" stopOpacity={0.2} />
+                                    <stop offset="95%" stopColor="#818cf8" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" vertical={false} />
-                            <XAxis dataKey="name" stroke="#475569" fontSize={11} axisLine={false} tickLine={false} />
-                            <YAxis stroke="#475569" fontSize={11} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
-                            <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} itemStyle={{ color: '#fff' }} />
-                            <Area type="monotone" dataKey="price" stroke="#6366f1" strokeWidth={3} fill="url(#chartGradient)" />
+                            <CartesianGrid strokeDasharray="2 4" stroke="rgba(255,255,255,0.04)" vertical={false} />
+                            <XAxis dataKey="name" stroke="#6b7280" fontSize={10} axisLine={false} tickLine={false} />
+                            <YAxis stroke="#6b7280" fontSize={10} axisLine={false} tickLine={false} domain={['auto', 'auto']} />
+                            <Tooltip contentStyle={{ background: '#1a1f26', border: '1px solid rgba(129, 140, 248, 0.3)', borderRadius: '8px', fontSize: '12px' }} itemStyle={{ color: '#e4e7eb' }} />
+                            <Area type="linear" dataKey="price" stroke="#818cf8" strokeWidth={2.5} fill="url(#chartGradient)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -406,20 +423,26 @@ const DashboardOverview = ({ marketData, historyData, interval, setInterval, new
 
             <div className="news-section glass-card">
                 <div className="news-header-top">
-                    <Newspaper size={20} color="#6366f1" />
-                    <h3>Live Market News</h3>
+                    <h3>Market News</h3>
                 </div>
                 <div className="news-scroll">
-                    {newsData.length > 0 ? newsData.map((news) => (
+                    {newsData.length > 0 ? newsData.map((news, idx) => (
                         <a key={news.id} href={news.url} target="_blank" rel="noopener noreferrer" className="news-item-link">
                             <div className="news-card-inner">
-                                <div className="news-meta">
-                                    <span className="source">{news.source}</span>
-                                    <span className="time"><Clock size={12} /> {new Date(news.datetime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                {news.image && <div className="news-image" style={{ backgroundImage: `url(${news.image})` }}></div>}
+                                <div className="news-content">
+                                    <div className="news-meta">
+                                        <span className="news-ticker">{marketData?.symbol}</span>
+                                        <span className={`sentiment-badge ${idx % 3 === 0 ? 'positive' : idx % 3 === 1 ? 'neutral' : 'negative'}`}>
+                                            {idx % 3 === 0 ? 'Positive' : idx % 3 === 1 ? 'Neutral' : 'Negative'}
+                                        </span>
+                                    </div>
+                                    <h4>{news.headline.substring(0, 80)}{news.headline.length > 80 ? '...' : ''}</h4>
+                                    <div className="news-footer">
+                                        <span className="news-source">{news.source}</span>
+                                        <span className="news-time">{new Date(news.datetime * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
                                 </div>
-                                <h4>{news.headline}</h4>
-                                <p>{news.summary.substring(0, 100)}...</p>
-                                <div className="view-more">Read More <ExternalLink size={14} /></div>
                             </div>
                         </a>
                     )) : (
@@ -430,48 +453,69 @@ const DashboardOverview = ({ marketData, historyData, interval, setInterval, new
         </div>
 
         <style jsx>{`
-      .overview-container { display: flex; flex-direction: column; gap: 24px; }
-      .hero-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; }
-      .main-stat-card { padding: 32px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-      .main-stat-card::after { content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%; background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%); }
-      .card-top h2 { font-size: 42px; font-weight: 800; margin-top: 4px; letter-spacing: -1px; }
-      .price-badge { padding: 6px 14px; border-radius: 100px; font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 4px; }
-      .price-badge.up { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-      .price-badge.down { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
-      .meta-stats { display: flex; gap: 32px; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); }
-      .m-item span { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-      .m-item h4 { font-size: 16px; margin-top: 4px; }
+      .overview-container { display: flex; flex-direction: column; gap: 20px; }
+      .hero-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+      .main-stat-card { padding: 32px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(255,255,255,0.08); background: #1a1f26; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+      .card-top { display: flex; flex-direction: column; }
+      .label { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
+      .card-top h2 { font-size: 52px; font-weight: 700; letter-spacing: -2px; margin-bottom: 8px; color: #e4e7eb; }
+      .price-change { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 600; margin-top: 4px; }
+      .price-change.up { color: #10b981; }
+      .price-change.down { color: #f43f5e; }
+      .meta-stats { display: flex; gap: 40px; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+      .m-item span { font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+      .m-item h4 { font-size: 17px; font-weight: 600; color: #d1d5db; }
 
-      .intelligence-card { padding: 32px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(15, 23, 42, 0) 100%); }
-      .intelligence-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+      .intelligence-card { padding: 28px; background: #1a1f26; border: 1px solid rgba(129, 140, 248, 0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+      .intel-header { margin-bottom: 20px; }
+      .intel-label { font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 1px; }
       .intel-content { display: flex; flex-direction: column; gap: 20px; }
-      .predict-stat h3 { font-size: 32px; color: #6366f1; margin-top: 4px; font-weight: 800; }
-      .meter-track { height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 8px; }
-      .meter-fill { height: 100%; background: #6366f1; border-radius: 10px; box-shadow: 0 0 15px rgba(99, 102, 241, 0.5); transition: width 1s ease-in-out; }
-      .signal-box { padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 14px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05); }
-      .signal-box.strong-buy { background: #6366f1; color: #fff; }
+      .predict-label { font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+      .predict-stat h3 { font-size: 36px; color: #a5b4fc; font-weight: 600; letter-spacing: -1px; }
+      .signal-display { display: flex; flex-direction: column; gap: 12px; }
+      .signal-indicator { padding: 10px 16px; border-radius: 6px; text-align: center; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(255,255,255,0.04); color: #9ca3af; border: 1px solid rgba(255,255,255,0.08); }
+      .signal-indicator.strong-buy { color: #a5b4fc; border-color: rgba(165, 180, 252, 0.3); background: rgba(129, 140, 248, 0.1); }
+      .signal-indicator.hold { color: #9ca3af; }
+      .confidence-bar { display: flex; flex-direction: column; gap: 8px; }
+      .conf-segments { display: flex; gap: 4px; }
+      .segment { flex: 1; height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; transition: background 0.3s; }
+      .segment.active { background: #818cf8; }
+      .conf-text { font-size: 11px; font-weight: 600; color: #6b7280; }
+      .ai-factors { display: flex; flex-direction: column; gap: 4px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+      .factors-label { font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+      .factors-text { font-size: 12px; color: #9ca3af; font-weight: 500; }
 
-      .main-content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-      .chart-section { padding: 32px; }
-      .chart-header { display: flex; justify-content: space-between; margin-bottom: 32px; }
-      .chart-tools { display: flex; background: rgba(255,255,255,0.03); padding: 4px; border-radius: 8px; }
-      .chart-tools button { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; color: #64748b; background: transparent; border: none; cursor: pointer; }
-      .chart-tools button.active { background: rgba(255,255,255,0.1); color: #fff; }
+      .main-content-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 20px; }
+      .chart-section { padding: 28px; border: 1px solid rgba(255,255,255,0.08); background: #1a1f26; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+      .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+      .chart-header h3 { font-size: 15px; font-weight: 600; color: #d1d5db; }
+      .chart-tools { display: flex; background: rgba(255,255,255,0.03); padding: 3px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08); }
+      .chart-tools button { padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: 600; color: #6b7280; background: transparent; border: none; cursor: pointer; transition: all 0.2s; }
+      .chart-tools button.active { background: rgba(255,255,255,0.08); color: #d1d5db; }
 
-      .news-section { padding: 32px; display: flex; flex-direction: column; }
-      .news-header-top { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
-      .news-header-top h3 { font-size: 18px; font-weight: 700; }
-      .news-scroll { overflow-y: auto; max-height: 500px; padding-right: 10px; }
-      .news-scroll::-webkit-scrollbar { width: 4px; }
+      .news-section { padding: 24px; display: flex; flex-direction: column; border: 1px solid rgba(255,255,255,0.08); background: #1a1f26; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+      .news-header-top { margin-bottom: 16px; }
+      .news-header-top h3 { font-size: 15px; font-weight: 600; color: #d1d5db; }
+      .news-scroll { overflow-y: auto; max-height: 460px; padding-right: 8px; }
+      .news-scroll::-webkit-scrollbar { width: 3px; }
       .news-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
       
-      .news-item-link { text-decoration: none; color: inherit; display: block; margin-bottom: 16px; transition: transform 0.2s; }
-      .news-item-link:hover { transform: translateX(5px); }
-      .news-card-inner { padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; }
-      .news-meta { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; }
-      .news-card-inner h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; color: #fff; }
-      .news-card-inner p { font-size: 13px; color: #94a3b8; line-height: 1.5; margin-bottom: 12px; }
-      .view-more { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #6366f1; }
+      .news-item-link { text-decoration: none; color: inherit; display: block; margin-bottom: 12px; transition: all 0.2s; }
+      .news-item-link:hover { opacity: 0.8; }
+      .news-card-inner { display: flex; gap: 12px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; transition: all 0.2s; }
+      .news-item-link:hover .news-card-inner { border-color: rgba(129, 140, 248, 0.3); background: rgba(255,255,255,0.04); }
+      .news-image { width: 80px; height: 80px; min-width: 80px; background-size: cover; background-position: center; border-radius: 6px; background-color: rgba(255,255,255,0.05); }
+      .news-content { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+      .news-meta { display: flex; align-items: center; gap: 8px; }
+      .news-ticker { font-size: 10px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(129, 140, 248, 0.15); padding: 2px 6px; border-radius: 3px; }
+      .sentiment-badge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
+      .sentiment-badge.positive { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+      .sentiment-badge.neutral { background: rgba(156, 163, 175, 0.15); color: #9ca3af; }
+      .sentiment-badge.negative { background: rgba(244, 63, 94, 0.15); color: #f43f5e; }
+      .news-card-inner h4 { font-size: 13px; font-weight: 600; line-height: 1.4; color: #d1d5db; }
+      .news-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+      .news-source { font-size: 10px; font-weight: 600; color: #6b7280; }
+      .news-time { font-size: 10px; color: #6b7280; }
     `}</style>
     </motion.div>
 );
@@ -689,8 +733,8 @@ const LearnView = () => {
 
                         <div className="article-body">
                             {selectedModule.content.map((sec, i) => (
-                                <div key={i} className="content-section">
-                                    <h3>{sec.heading}</h3>
+                                <div key={i} className="content-sec">
+                                    <h4>{sec.heading}</h4>
                                     <p>{sec.body}</p>
                                 </div>
                             ))}
@@ -1093,15 +1137,27 @@ const FloatingMentor = ({ userData, symbol, marketData }) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("");
+    const [sessionContext, setSessionContext] = useState({ symbol: null, topic: null });
 
     useEffect(() => {
         if (isOpen && messages.length === 0) {
             setMessages([{
                 role: 'ai',
-                text: `Welcome! I am your AI Mentor. I see you are tracking ${symbol}. How can I assist your learning today?`
+                text: `I'm your trading mentor. I see you're analyzing ${symbol} at $${marketData?.price?.toFixed(2)}. What would you like to understand about this market?`
             }]);
+            setSessionContext({ symbol, topic: 'overview' });
         }
-    }, [isOpen, symbol]);
+    }, [isOpen]);
+
+    useEffect(() => {
+        if (isOpen && sessionContext.symbol && sessionContext.symbol !== symbol) {
+            setMessages(prev => [...prev, {
+                role: 'ai',
+                text: `I notice you've switched to ${symbol}. The current price is $${marketData?.price?.toFixed(2)} with a ${marketData?.prediction?.signal || 'Neutral'} signal. How can I help you analyze this asset?`
+            }]);
+            setSessionContext({ symbol, topic: 'overview' });
+        }
+    }, [symbol, isOpen]);
 
     const sendMessage = async (msg = input) => {
         if (!msg.trim()) return;
@@ -1117,12 +1173,32 @@ const FloatingMentor = ({ userData, symbol, marketData }) => {
                 context: {
                     symbol: symbol,
                     price: marketData?.price,
-                    indicators: marketData?.indicators,
-                    prediction: marketData?.prediction
+                    signal: marketData?.prediction?.signal,
+                    confidence: marketData?.prediction?.confidence,
+                    change: marketData?.change,
+                    changePercent: marketData?.changePercent
                 }
             });
-            setMessages([...newMsgs, { role: 'ai', text: res.data.text }]);
-        } catch (err) { } finally { setLoading(false); }
+            
+            const responseText = res.data.text || formatEducationalResponse(msg, marketData);
+            setMessages([...newMsgs, { role: 'ai', text: responseText }]);
+            
+            if (msg.toLowerCase().includes('indicator')) setSessionContext(prev => ({ ...prev, topic: 'indicators' }));
+            else if (msg.toLowerCase().includes('risk')) setSessionContext(prev => ({ ...prev, topic: 'risk' }));
+        } catch (err) {
+            const fallbackResponse = formatEducationalResponse(msg, marketData);
+            setMessages([...newMsgs, { role: 'ai', text: fallbackResponse }]);
+        } finally { 
+            setLoading(false); 
+        }
+    };
+
+    const formatEducationalResponse = (query, data) => {
+        const signal = data?.prediction?.signal || 'Neutral';
+        const price = data?.price?.toFixed(2) || 'N/A';
+        const change = data?.changePercent || 0;
+        
+        return `📊 Market Context\n${symbol} is trading at $${price} (${change > 0 ? '+' : ''}${change}%). Current market signal: ${signal}.\n\n📈 Technical Indicators\nThe AI model shows ${(data?.prediction?.confidence * 100).toFixed(0)}% confidence in this signal based on price action, volume patterns, and momentum indicators.\n\n⚠️ Risk Insight\nRemember: No prediction is guaranteed. Always use proper position sizing and risk management. Consider your investment timeline and risk tolerance.\n\n📚 Learning Point\nMarket signals are probabilistic, not deterministic. Use them as one input in your decision-making process, not the sole factor.`;
     };
 
     return (
@@ -1134,11 +1210,14 @@ const FloatingMentor = ({ userData, symbol, marketData }) => {
 
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="mentor-window glass-card">
+                    <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="mentor-window">
                         <div className="mentor-window-header">
                             <div className="m-title">
-                                <Zap size={18} color="#6366f1" />
-                                <h3>TradeMind Mentor</h3>
+                                <GraduationCap size={20} color="#6366f1" />
+                                <div>
+                                    <h3>Trading Mentor</h3>
+                                    <span className="context-tag">{symbol} · ${marketData?.price?.toFixed(2)}</span>
+                                </div>
                             </div>
                             <button className="close-mentor" onClick={() => setIsOpen(false)}><ChevronRight style={{ transform: 'rotate(90deg)' }} /></button>
                         </div>
@@ -1147,21 +1226,51 @@ const FloatingMentor = ({ userData, symbol, marketData }) => {
                             {messages.map((m, i) => (
                                 <div key={i} className={`chat-line ${m.role}`}>
                                     <div className="bubble">
-                                        {m.text.split('\n').map((t, ti) => <p key={ti}>{t}</p>)}
+                                        {m.text.split('\n').map((t, ti) => (
+                                            <p key={ti} className={t.startsWith('📊') || t.startsWith('📈') || t.startsWith('⚠️') || t.startsWith('📚') ? 'section-header' : ''}>
+                                                {t}
+                                            </p>
+                                        ))}
                                     </div>
                                 </div>
                             ))}
-                            {loading && <div className="chat-line ai loading-dots"><span>.</span><span>.</span><span>.</span></div>}
+                            {loading && (
+                                <div className="chat-line ai">
+                                    <div className="bubble analyzing">
+                                        <div className="analyzing-indicator">
+                                            <div className="dot"></div>
+                                            <div className="dot"></div>
+                                            <div className="dot"></div>
+                                        </div>
+                                        <span>Analyzing market data...</span>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div className="mentor-window-footer">
                             <div className="mentor-quick-btns">
-                                <button onClick={() => sendMessage("Explain Indicators")}>Indicators</button>
-                                <button onClick={() => sendMessage("Risk Check")}>Risk Tip</button>
+                                <button onClick={() => sendMessage(`What do the indicators say about ${symbol}?`)}>
+                                    <BarChart2 size={14} /> Explain Indicators
+                                </button>
+                                <button onClick={() => sendMessage(`What are the risks with ${symbol} right now?`)}>
+                                    <ShieldCheck size={14} /> Risk Analysis
+                                </button>
+                                <button onClick={() => sendMessage(`Why is ${symbol} showing a ${marketData?.prediction?.signal} signal?`)}>
+                                    <Activity size={14} /> Signal Breakdown
+                                </button>
                             </div>
                             <div className="mentor-input">
-                                <input type="text" placeholder="Ask your mentor..." value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && sendMessage()} />
-                                <button onClick={() => sendMessage()}><TrendingUp size={18} /></button>
+                                <input 
+                                    type="text" 
+                                    placeholder={`Ask about ${symbol} indicators, risks, or signals...`}
+                                    value={input} 
+                                    onChange={(e) => setInput(e.target.value)} 
+                                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()} 
+                                />
+                                <button onClick={() => sendMessage()} disabled={!input.trim()}>
+                                    <TrendingUp size={18} />
+                                </button>
                             </div>
                         </div>
                     </motion.div>
@@ -1171,42 +1280,120 @@ const FloatingMentor = ({ userData, symbol, marketData }) => {
             <style jsx>{`
                 .floating-mentor-wrapper { position: fixed; bottom: 40px; right: 40px; z-index: 9999; }
                 .mentor-fab { 
-                    width: 70px; height: 70px; border-radius: 50%; background: #6366f1; border: none; cursor: pointer;
-                    display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.4);
+                    width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+                    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; 
+                    position: relative; box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
                     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
-                .mentor-fab:hover { transform: scale(1.1) rotate(5deg); }
-                .mentor-fab.active { transform: scale(0.9) rotate(-90deg); background: #f43f5e; box-shadow: 0 8px 32px rgba(244, 63, 94, 0.4); }
-                .fab-glow { position: absolute; inset: -4px; border-radius: 50%; background: linear-gradient(45deg, #6366f1, #a855f7); opacity: 0.4; filter: blur(8px); animation: spin 4s linear infinite; }
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .mentor-fab:hover { transform: scale(1.08); }
+                .mentor-fab.active { transform: scale(0.95); background: linear-gradient(135deg, #8b5cf6, #6366f1); }
+                .fab-glow { 
+                    position: absolute; inset: -4px; border-radius: 50%; 
+                    background: linear-gradient(45deg, #6366f1, #a855f7); opacity: 0.3; 
+                    filter: blur(12px); animation: pulse-glow 3s ease-in-out infinite; 
+                }
+                @keyframes pulse-glow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
 
                 .mentor-window { 
-                    position: absolute; bottom: 85px; right: 0; width: 380px; height: 550px; 
-                    display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.4);
-                    border: 1px solid rgba(255,255,255,0.1); border-radius: 24px;
+                    position: absolute; bottom: 85px; right: 0; width: 420px; height: 600px; 
+                    display: flex; flex-direction: column; overflow: hidden; 
+                    background: #1e293b; border: 1px solid rgba(148, 163, 184, 0.2); 
+                    border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
                 }
-                .mentor-window-header { padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-                .m-title { display: flex; align-items: center; gap: 10px; }
-                .m-title h3 { font-size: 16px; font-weight: 800; }
-                .close-mentor { background: transparent; border: none; color: #64748b; cursor: pointer; }
+                .mentor-window-header { 
+                    padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; 
+                    border-bottom: 1px solid rgba(148, 163, 184, 0.15); background: #1e293b;
+                }
+                .m-title { display: flex; align-items: center; gap: 12px; }
+                .m-title > div { display: flex; flex-direction: column; gap: 2px; }
+                .m-title h3 { font-size: 15px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.3px; }
+                .context-tag { font-size: 11px; color: #94a3b8; font-weight: 600; }
+                .close-mentor { 
+                    background: transparent; border: none; color: #64748b; cursor: pointer; 
+                    padding: 4px; transition: color 0.2s; 
+                }
+                .close-mentor:hover { color: #cbd5e1; }
 
-                .mentor-window-chat { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-                .chat-line { display: flex; flex-direction: column; max-width: 85%; }
+                .mentor-window-chat { 
+                    flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; 
+                    background: #0f172a;
+                }
+                .mentor-window-chat::-webkit-scrollbar { width: 4px; }
+                .mentor-window-chat::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 10px; }
+                
+                .chat-line { display: flex; flex-direction: column; max-width: 82%; animation: slideIn 0.3s ease-out; }
+                @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
                 .chat-line.ai { align-self: flex-start; }
                 .chat-line.user { align-self: flex-end; }
-                .bubble { padding: 12px 16px; border-radius: 16px; font-size: 13px; line-height: 1.6; }
-                .ai .bubble { background: rgba(99, 102, 241, 0.1); color: #fff; border-bottom-left-radius: 4px; border-left: 3px solid #6366f1; }
-                .user .bubble { background: #6366f1; color: #fff; border-bottom-right-radius: 4px; }
-                .loading-dots { font-weight: 800; color: #6366f1; font-size: 24px; }
+                
+                .bubble { 
+                    padding: 14px 16px; border-radius: 12px; font-size: 13px; line-height: 1.7; 
+                    border: 1px solid transparent;
+                }
+                .ai .bubble { 
+                    background: #1e293b; color: #e2e8f0; border-color: rgba(99, 102, 241, 0.3); 
+                    border-left: 3px solid #6366f1; border-bottom-left-radius: 4px;
+                }
+                .user .bubble { 
+                    background: #6366f1; color: #ffffff; border-bottom-right-radius: 4px;
+                    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+                }
+                .bubble p { margin: 0 0 10px 0; }
+                .bubble p:last-child { margin-bottom: 0; }
+                .bubble p.section-header { 
+                    font-weight: 700; color: #a5b4fc; margin-top: 12px; margin-bottom: 6px; 
+                    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+                }
+                .bubble p.section-header:first-child { margin-top: 0; }
+                
+                .bubble.analyzing { 
+                    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+                    background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.2);
+                }
+                .analyzing-indicator { display: flex; gap: 4px; }
+                .analyzing-indicator .dot { 
+                    width: 6px; height: 6px; border-radius: 50%; background: #6366f1; 
+                    animation: analyzing-bounce 1.4s infinite ease-in-out both; 
+                }
+                .analyzing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+                .analyzing-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+                @keyframes analyzing-bounce { 0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; } 40% { transform: scale(1.2); opacity: 1; } }
+                .bubble.analyzing span { font-size: 12px; color: #94a3b8; font-weight: 500; }
 
-                .mentor-window-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2); }
-                .mentor-quick-btns { display: flex; gap: 8px; margin-bottom: 16px; }
-                .mentor-quick-btns button { padding: 6px 12px; border-radius: 100px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #94a3b8; font-size: 11px; font-weight: 600; cursor: pointer; }
-                .mentor-quick-btns button:hover { background: rgba(99, 102, 241, 0.2); color: #fff; }
+                .mentor-window-footer { 
+                    padding: 16px 20px; border-top: 1px solid rgba(148, 163, 184, 0.15); 
+                    background: #1e293b;
+                }
+                .mentor-quick-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+                .mentor-quick-btns button { 
+                    padding: 8px 14px; border-radius: 8px; background: rgba(99, 102, 241, 0.08); 
+                    border: 1px solid rgba(99, 102, 241, 0.2); color: #a5b4fc; 
+                    font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+                    display: flex; align-items: center; gap: 6px;
+                }
+                .mentor-quick-btns button:hover { 
+                    background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); 
+                    color: #c7d2fe; transform: translateY(-1px);
+                }
 
-                .mentor-input { display: flex; gap: 10px; background: #0d1117; padding: 8px 8px 8px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05); }
-                .mentor-input input { flex: 1; background: transparent; border: none; color: #fff; font-size: 13px; outline: none; }
-                .mentor-input button { width: 32px; height: 32px; border-radius: 10px; background: #6366f1; border: none; color: #fff; cursor: pointer; }
+                .mentor-input { 
+                    display: flex; gap: 10px; background: #0f172a; padding: 10px 10px 10px 16px; 
+                    border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.2); 
+                    transition: border-color 0.2s;
+                }
+                .mentor-input:focus-within { border-color: rgba(99, 102, 241, 0.5); }
+                .mentor-input input { 
+                    flex: 1; background: transparent; border: none; color: #e2e8f0; 
+                    font-size: 13px; outline: none; font-weight: 500;
+                }
+                .mentor-input input::placeholder { color: #64748b; }
+                .mentor-input button { 
+                    width: 36px; height: 36px; border-radius: 8px; background: #6366f1; 
+                    border: none; color: #fff; cursor: pointer; transition: all 0.2s;
+                    display: flex; align-items: center; justify-content: center;
+                }
+                .mentor-input button:hover:not(:disabled) { background: #4f46e5; transform: translateY(-1px); }
+                .mentor-input button:disabled { opacity: 0.4; cursor: not-allowed; }
             `}</style>
         </div>
     );
